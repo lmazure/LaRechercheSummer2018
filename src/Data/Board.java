@@ -2,36 +2,39 @@ package Data;
 
 public class Board {
 
-    public enum Color {
-        Empty,
-        Red,
-        Blue
-    }
+    final static public int EMPTY = 0;
+    final static public int RED = 0;
+    final static public int BLUE = 0;
     
     final private int a_size;
-    final private Color[] a_data;
+    final private int[] a_data;
     
     public Board(final int size) {
         
         // ASSERT size > 0
         
         a_size = size;
-        a_data = new Color[size*size]; 
+        a_data = new int[size*size]; 
+    }
+    
+    public int getSize() {
+        
+        return a_size;
     }
     
     public void setCellContent(
             final int x,
             final int y,
-            final Color value) {
+            final int value) {
 
         // ASSERT x >= 0 and x < a_size
         // ASSERT y >= 0 and y < a_size
-        // ASSERT value == Color.Empty or value == Color.Red or value == Color.Blue   
+        // ASSERT value == Empty or value == Red or value == Blue   
         
         a_data[x + y * a_size] = value;
     }
     
-    public Color getCellContent(
+    public int getCellContent(
             final int x,
             final int y) {
 
