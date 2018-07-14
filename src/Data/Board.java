@@ -43,6 +43,40 @@ public class Board {
         return b;
     }
     
+    @Override
+    public boolean equals(final Object other) {
+        
+        if (this == other) return true;
+        
+        if (!(other instanceof Board)) return false;
+        
+        final Board o = (Board) other;
+
+        if (a_size != o.a_size) return false;
+        
+        for (int x = 0; x < a_size; x++) {
+            for (int y = 0; y < a_size; y++) {
+                if (a_data[x + y * a_size] != o.a_data[x + y * a_size]) return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        
+        int hash = 0;
+        
+        for (int x = 0; x < a_size; x++) {
+            for (int y = 0; y < a_size; y++) {
+                hash = hash * 7 + a_data[x + y * a_size];
+            }
+        }
+                        
+        return hash;
+    }
+    
     public int getSize() {
         
         return a_size;

@@ -1,8 +1,9 @@
 package Processor;
 
-import org.junit.jupiter.api.Disabled;
+import java.util.HashSet;
+import java.util.Set;
 
-//import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,33 +17,34 @@ class SolverTest {
 
         // --- arrange ---
         
-        final Board board = new Board(1);
-        board.setCellContent(0, 0, Board.RED);
+        final Board board = TestHelper.buildFromString("B");
+        final Set<Board> set = new HashSet<Board>(8);
         
+        // --- act ---
+
+        final Solver solver = new Solver(b -> set.add(b));
+        solver.generateLargerBoard(board);
+
         // --- assert ---
-        
-        Solver.generateLargerBoard(board);
+
+        assertEquals(7 , set.size());
+        assertTrue(set.contains(TestHelper.buildFromString("BBBR")));
+        assertTrue(set.contains(TestHelper.buildFromString("BRBR")));
+        assertTrue(set.contains(TestHelper.buildFromString("BRBB")));
+        assertTrue(set.contains(TestHelper.buildFromString("RBBR")));
+        assertTrue(set.contains(TestHelper.buildFromString("RBBB")));
+        assertTrue(set.contains(TestHelper.buildFromString("RRBR")));
+        assertTrue(set.contains(TestHelper.buildFromString("RRBB")));
     }
     
     @Test
-    @Disabled
     void test() {
 
-        // --- arrange ---
+        final Board board = TestHelper.buildFromString("BRBB");
         
-        final Board board = new Board(3);
-        board.setCellContent(0, 0, Board.RED);
-        board.setCellContent(1, 0, Board.RED);
-        board.setCellContent(2, 0, Board.BLUE);
-        board.setCellContent(0, 1, Board.RED);
-        board.setCellContent(1, 1, Board.BLUE);
-        board.setCellContent(2, 1, Board.BLUE);
-        board.setCellContent(0, 2, Board.RED);
-        board.setCellContent(1, 2, Board.BLUE);
-        board.setCellContent(2, 2, Board.RED);        
-        
-        // --- assert ---
-        
-        Solver.generateLargerBoard(board);
+        // --- act ---
+
+        final Solver solver = new Solver(b -> assertTrue(Checker.isValid(b)));
+        solver.generateLargerBoard(board);
     }
 }

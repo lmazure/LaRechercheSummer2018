@@ -1,10 +1,19 @@
 package Processor;
 
+import java.util.function.Consumer;
+
 import Data.Board;
 
 public class Solver {
+    
+    final private Consumer<Board> a_consumer;
+    
+    public Solver(final Consumer<Board> consumer) {
+        
+        a_consumer = consumer;
+    }
 
-    static public void generateLargerBoard(final Board board) {
+    public void generateLargerBoard(final Board board) {
 
         final Board b = board.generateLargerBoard();
         
@@ -13,7 +22,7 @@ public class Solver {
     }
  
    
-    static private void analyzeIndexColumn(
+    private void analyzeIndexColumn(
             final Board board,
             final int index,
             final int color,
@@ -49,7 +58,7 @@ public class Solver {
         analyzeIndexRow(b, index, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
     }
     
-    static private void analyzeIndexRow(
+    private void analyzeIndexRow(
             final Board board,
             final int index,
             final int color,
@@ -90,25 +99,24 @@ public class Solver {
         }
     }
     
-    static private void analyzeFinalCell(
+    private void analyzeFinalCell(
             final Board board,
             final int color,
             final int colorDisallowedFlag,
             final int otherColorDisallowedFlag) {
      
         final Board b = new Board(board);
-        final int x = b.getSize() - 1;
-        final int y = b.getSize() - 1;
+        final int z = b.getSize() - 1;
         
-        assert (b.getCellContent(x, y) != colorDisallowedFlag) || (b.getCellContent(x, y) != otherColorDisallowedFlag);
+        assert (b.getCellContent(z, z) != colorDisallowedFlag) || (b.getCellContent(z, z) != otherColorDisallowedFlag);
                 
-        if (b.getCellContent(x, y) != colorDisallowedFlag) {
-            b.setCellContent(x, y, color);
-            dumpBoard(b);
+        if (b.getCellContent(z, z) != colorDisallowedFlag) {
+            b.setCellContent(z, z, color);
+            a_consumer.accept(b);
         }
     }
     
-    static private void dumpBoard(final Board board) {
+    /*static private void dumpBoard(final Board board) {
         
         assert Checker.isValid(board);
         
@@ -119,5 +127,5 @@ public class Solver {
         }
         
         generateLargerBoard(board);
-    }
+    }*/
 }
