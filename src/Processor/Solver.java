@@ -38,7 +38,7 @@ public class Solver {
             if ( (b.getCellContent(x - i, y + i) == color) &&
                  (b.getCellContent(x - i, y) == color)) {
                 if (b.getCellContent(x, y + i) == otherColorDisallowedFlag) {
-                    // impossible : the two colors are disallowed
+                    // impossible: the two colors are disallowed
                     return;
                 }
                 b.setCellContent(x, y + i, colorDisallowedFlag);
@@ -110,7 +110,13 @@ public class Solver {
     
     static private void dumpBoard(final Board board) {
         
-        System.out.println(board.dumpToString());
+        assert Checker.isValid(board);
+        
+        if (board.getSize() > 6) {
+            System.out.println(board.getSize());
+            System.out.println(board.dumpToString());
+            System.out.println("------------------------");
+        }
         
         generateLargerBoard(board);
     }

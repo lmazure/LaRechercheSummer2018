@@ -88,7 +88,7 @@ public class Board {
                     case BLUE : c = 'B'; break;
                     case RED_IS_DISALLOWED : c = 'r'; break;
                     case BLUE_IS_DISALLOWED : c = 'b'; break;
-                    default: throw new IllegalStateException(); // TODO find a better exception
+                    default: throw new AssertionError();
                 }
                 builder.append(c);
             }
