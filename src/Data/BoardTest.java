@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class BoardTest {
+public class BoardTest {
 
     @Test
     void sizeIsCorrectlyManaged() {
@@ -122,6 +122,40 @@ class BoardTest {
         assertEquals(Board.EMPTY, generatedBoard.getCellContent(3, 1));
         assertEquals(Board.EMPTY, generatedBoard.getCellContent(3, 2));
         assertEquals(Board.EMPTY, generatedBoard.getCellContent(3, 3));
+    }
+
+    @Test
+    void symetricBoardIsCorrectlyGenerated() {
+
+        // --- arrange ---
+        
+        final Board board = new Board(3);
+        board.setCellContent(0, 0, Board.BLUE);
+        board.setCellContent(1, 0, Board.RED);
+        //board.setCellContent(2, 0, Board.EMPTY);
+        board.setCellContent(0, 1, Board.BLUE);
+        //board.setCellContent(1, 1, Board.EMPTY);
+        board.setCellContent(2, 1, Board.RED);
+        //board.setCellContent(0, 2, Board.EMPTY);
+        board.setCellContent(1, 2, Board.BLUE);
+        board.setCellContent(2, 2, Board.RED);
+        
+        // --- act ---
+
+        final Board generatedBoard = board.generateSymetricBoard();
+        
+        // --- assert ---
+        
+        assertEquals(3, generatedBoard.getSize());
+        assertEquals(Board.BLUE, generatedBoard.getCellContent(0, 0));
+        assertEquals(Board.RED, generatedBoard.getCellContent(0, 1));
+        assertEquals(Board.EMPTY, generatedBoard.getCellContent(0, 2));
+        assertEquals(Board.BLUE, generatedBoard.getCellContent(1, 0));
+        assertEquals(Board.EMPTY, generatedBoard.getCellContent(1, 1));
+        assertEquals(Board.RED, generatedBoard.getCellContent(1, 2));
+        assertEquals(Board.EMPTY, generatedBoard.getCellContent(2, 0));
+        assertEquals(Board.BLUE, generatedBoard.getCellContent(2, 1));
+        assertEquals(Board.RED, generatedBoard.getCellContent(2, 2));
     }
 
     @Test

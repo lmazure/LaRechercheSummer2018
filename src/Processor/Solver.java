@@ -1,5 +1,7 @@
 package Processor;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import Data.Board;
@@ -7,27 +9,37 @@ import Data.Board;
 public class Solver {
     
     final private Consumer<Board> a_consumer;
+    private int a_nb;
     
     public Solver(final Consumer<Board> consumer) {
         
         a_consumer = consumer;
+        a_nb = 0;
     }
 
     public void generateLargerBoard(final Board board) {
 
-        final Board b = board.generateLargerBoard();
+        System.out.println(Thread.currentThread().getName() + " starts (size=" + board.getSize() + ")");
+        a_nb++;
+        System.out.println("done " + a_nb);
         
-        analyzeIndexColumn(b, 0, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
-        analyzeIndexColumn(b, 0, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
+        final Board b = board.generateLargerBoard();
+        final Set<Board> symetricDetection = board.isSymetric() ? new HashSet<Board>() : null;
+        
+        analyzeIndexColumn(b, symetricDetection, 0, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
+        analyzeIndexColumn(b, symetricDetection, 0, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
+        
+        System.out.println(Thread.currentThread().getName() + " ends");
     }
  
    
     private void analyzeIndexColumn(
             final Board board,
+            final Set<Board> symetricDetection,
             final int index,
-            final int color,
-            final int colorDisallowedFlag,
-            final int otherColorDisallowedFlag) {
+            final byte color,
+            final byte colorDisallowedFlag,
+            final byte otherColorDisallowedFlag) {
         
         final Board b = new Board(board);
         final int x = b.getSize() - 1;
@@ -54,16 +66,17 @@ public class Solver {
             }
         }
 
-        analyzeIndexRow(b, index, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
-        analyzeIndexRow(b, index, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
+        analyzeIndexRow(b, symetricDetection, index, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
+        analyzeIndexRow(b, symetricDetection, index, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
     }
     
     private void analyzeIndexRow(
             final Board board,
+            final Set<Board> symetricDetection,
             final int index,
-            final int color,
-            final int colorDisallowedFlag,
-            final int otherColorDisallowedFlag) {
+            final byte color,
+            final byte colorDisallowedFlag,
+            final byte otherColorDisallowedFlag) {
         
         final Board b = new Board(board);
         final int x = index;
@@ -91,19 +104,20 @@ public class Solver {
         }
 
         if (index < b.getSize() - 2) {
-            analyzeIndexColumn(b, index + 1, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
-            analyzeIndexColumn(b, index + 1, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);            
+            analyzeIndexColumn(b, symetricDetection, index + 1, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
+            analyzeIndexColumn(b, symetricDetection, index + 1, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);            
         } else {
-            analyzeFinalCell(b, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
-            analyzeFinalCell(b, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
+            analyzeFinalCell(b, symetricDetection, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
+            analyzeFinalCell(b, symetricDetection, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
         }
     }
     
     private void analyzeFinalCell(
             final Board board,
-            final int color,
-            final int colorDisallowedFlag,
-            final int otherColorDisallowedFlag) {
+            final Set<Board> symetricDetection,
+            final byte color,
+            final byte colorDisallowedFlag,
+            final byte otherColorDisallowedFlag) {
      
         final Board b = new Board(board);
         final int z = b.getSize() - 1;
@@ -112,7 +126,14 @@ public class Solver {
                 
         if (b.getCellContent(z, z) != colorDisallowedFlag) {
             b.setCellContent(z, z, color);
-            a_consumer.accept(b);
+            if (symetricDetection != null) {
+                if (!symetricDetection.contains(b.generateSymetricBoard()) ) {
+                    a_consumer.accept(b);
+                    symetricDetection.add(b);
+                }
+            } else {
+                a_consumer.accept(b);                
+            }
         }
     }
     

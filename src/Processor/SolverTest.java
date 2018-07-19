@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import Data.Board;
 
-class SolverTest {
+public class SolverTest {
 
 
     @Test
@@ -27,14 +27,12 @@ class SolverTest {
 
         // --- assert ---
 
-        assertEquals(7 , set.size());
-        assertTrue(set.contains(TestHelper.buildFromString("BBBR")));
-        assertTrue(set.contains(TestHelper.buildFromString("BRBR")));
+        assertEquals(5 , set.size());
+        assertTrue(set.contains(TestHelper.buildFromString("BBBR")) ^ set.contains(TestHelper.buildFromString("RBBB")));
+        assertTrue(set.contains(TestHelper.buildFromString("BRBR")) ^ set.contains(TestHelper.buildFromString("RRBB")));
         assertTrue(set.contains(TestHelper.buildFromString("BRBB")));
         assertTrue(set.contains(TestHelper.buildFromString("RBBR")));
-        assertTrue(set.contains(TestHelper.buildFromString("RBBB")));
         assertTrue(set.contains(TestHelper.buildFromString("RRBR")));
-        assertTrue(set.contains(TestHelper.buildFromString("RRBB")));
     }
     
     @Test

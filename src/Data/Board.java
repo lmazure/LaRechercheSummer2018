@@ -4,21 +4,21 @@ import java.util.Arrays;
 
 public class Board {
 
-    final static public int EMPTY = 0;
-    final static public int RED = 1;
-    final static public int BLUE = 2;
-    final static public int RED_IS_DISALLOWED = 4;
-    final static public int BLUE_IS_DISALLOWED = 8;
+    final static public byte EMPTY = 0;
+    final static public byte RED = 1;
+    final static public byte BLUE = 2;
+    final static public byte RED_IS_DISALLOWED = 4;
+    final static public byte BLUE_IS_DISALLOWED = 8;
     
     final private int a_size;
-    final private int[] a_data;
+    final private byte[] a_data;
     
     public Board(final int size) {
         
         assert (size > 0);
         
         a_size = size;
-        a_data = new int[size*size]; 
+        a_data = new byte[size*size]; 
     }
     
     public Board(final Board board) {
@@ -34,15 +34,28 @@ public class Board {
         final int newBoardSize = a_size + 1;
         final Board b = new Board(newBoardSize);
         
-        for (int x = 0; x < a_size; x++) {
-            for (int y = 0; y < a_size; y++) {
+        for (int y = 0; y < a_size; y++) {
+            for (int x = 0; x < a_size; x++) {
                 b.a_data[x + y * newBoardSize] = a_data[x + y * a_size]; //TODO optimize with Array.Copy
             }
         }
         
         return b;
     }
-    
+
+    public Board generateSymetricBoard() {
+        
+        final Board b = new Board(a_size);
+        
+        for (int y = 0; y < a_size; y++) {
+            for (int x = 0; x < a_size; x++) {
+                b.a_data[y + x * a_size] = a_data[x + y * a_size];
+            }
+        }
+        
+        return b;
+    }
+
     @Override
     public boolean equals(final Object other) {
         
@@ -54,8 +67,8 @@ public class Board {
 
         if (a_size != o.a_size) return false;
         
-        for (int x = 0; x < a_size; x++) {
-            for (int y = 0; y < a_size; y++) {
+        for (int y = 0; y < a_size; y++) {
+            for (int x = 0; x < a_size; x++) {
                 if (a_data[x + y * a_size] != o.a_data[x + y * a_size]) return false;
             }
         }
@@ -66,15 +79,7 @@ public class Board {
     @Override
     public int hashCode() {
         
-        int hash = 0;
-        
-        for (int x = 0; x < a_size; x++) {
-            for (int y = 0; y < a_size; y++) {
-                hash = hash * 7 + a_data[x + y * a_size];
-            }
-        }
-                        
-        return hash;
+        return Arrays.hashCode(a_data);
     }
     
     public int getSize() {
@@ -85,7 +90,7 @@ public class Board {
     public void setCellContent(
             final int x,
             final int y,
-            final int value) {
+            final byte value) {
 
         //assert !((x == 3) && (y == 3) && ((value == RED) || (value == BLUE))) : "trying to set value " + value + " in the last cell"; //TODO remove this line
         assert (x >= 0) && (x < a_size);
@@ -99,7 +104,7 @@ public class Board {
         a_data[x + y * a_size] = value;
     }
     
-    public int getCellContent(
+    public byte getCellContent(
             final int x,
             final int y) {
 
@@ -109,6 +114,17 @@ public class Board {
         return a_data[x + y * a_size];
     }
     
+    public boolean isSymetric() {
+
+        for (int y = 1; y < a_size; y++) {
+            for (int x = 0; x < y - 1 ; x++) {
+                if (a_data[y + x * a_size] != a_data[x + y * a_size]) return false;
+            }
+        }
+
+        return true;
+    }
+
     public String dumpToString() {
         
         final StringBuilder builder = new StringBuilder(a_size * (a_size + 1));
@@ -133,10 +149,4 @@ public class Board {
         
         return builder.toString();
     }
-    
-    // TODO implement
-    // toString
-    // fromString
-    // copy from smaller size
-    // rotation + symmetry
 }

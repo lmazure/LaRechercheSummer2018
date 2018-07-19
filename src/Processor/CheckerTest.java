@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import Data.Board;
 
-class CheckerTest extends Checker {
+public class CheckerTest extends Checker {
 
     @Test
     void testValid() {
