@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import Data.Board;
+import Data.TestHelper;
 
 public class CheckerTest extends Checker {
 

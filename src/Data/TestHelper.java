@@ -1,6 +1,4 @@
-package Processor;
-
-import Data.Board;
+package Data;
 
 public class TestHelper {
 

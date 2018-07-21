@@ -1,5 +1,8 @@
 package Data;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Board {
@@ -56,6 +59,18 @@ public class Board {
         return b;
     }
 
+    static public Board generateFromStream(final DataInputStream stream) throws IOException {
+
+        final int size = stream.readInt();
+        assert (size > 0);
+        final Board b = new Board(size);
+        
+        final int nbReadBytes = stream.read(b.a_data);
+        assert (nbReadBytes == b.a_size * b.a_size);
+        
+        return b;
+    }
+    
     @Override
     public boolean equals(final Object other) {
         
@@ -92,7 +107,6 @@ public class Board {
             final int y,
             final byte value) {
 
-        //assert !((x == 3) && (y == 3) && ((value == RED) || (value == BLUE))) : "trying to set value " + value + " in the last cell"; //TODO remove this line
         assert (x >= 0) && (x < a_size);
         assert (y >= 0) && (y < a_size);
         assert (value == RED) || (value == BLUE) || (value == RED_IS_DISALLOWED) || (value == BLUE_IS_DISALLOWED): "invalid value: " + value  + " (cell: [" + x + "," + y + "])";
@@ -125,6 +139,12 @@ public class Board {
         return true;
     }
 
+    public void writeToStream(final DataOutputStream stream) throws IOException {
+        
+        stream.writeInt(a_size);
+        stream.write(a_data);
+    }
+    
     public String dumpToString() {
         
         final StringBuilder builder = new StringBuilder(a_size * (a_size + 1));
