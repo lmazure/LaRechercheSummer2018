@@ -1,15 +1,13 @@
 package Main;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.IOException;
 
 import Data.Board;
-import Processor.Solver;
+import Data.BoardStack;
 
 public class Main {
 
-    final private Solver a_solver;
-    final private ExecutorService a_executorService;
+    final private BoardStack a_bordStack;
     
     public static void main(String[] args) {
 
@@ -19,26 +17,25 @@ public class Main {
     
     private Main() {
         
-        a_solver = new Solver(b -> this.handle(b));
-        a_executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        a_bordStack = new BoardStack(10_000);
     }
     
     private void start() {
         
         final Board board = new Board(1);
         board.setCellContent(0, 0, Board.BLUE);
-        handle(board);
-    }
-    
-    private void handle(final Board board) {
-               
-        if (board.getSize() > 12) {
-            System.out.println(board.getSize());
-            System.out.println(board.dumpToString());
+        try {
+            a_bordStack.push(board);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
-        
-        //System.out.println("new job");
-        a_executorService.execute(() -> a_solver.generateLargerBoard(board));
-        //a_solver.generateLargerBoard(board);
+
+        final int numberOfThreads = Runtime.getRuntime().availableProcessors();
+        for (int i = 0; i < numberOfThreads; i++) {
+            final Worker worker = new Worker(a_bordStack); 
+            final Thread thread = new Thread(worker);
+            thread.start();
+        }
     }
 }

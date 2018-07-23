@@ -9,19 +9,15 @@ import Data.Board;
 public class Solver {
     
     final private Consumer<Board> a_consumer;
-    private int a_nb;
     
     public Solver(final Consumer<Board> consumer) {
         
         a_consumer = consumer;
-        a_nb = 0;
     }
 
     public void generateLargerBoard(final Board board) {
 
-        System.out.println(Thread.currentThread().getName() + " starts (size=" + board.getSize() + ")");
-        a_nb++;
-        System.out.println("done " + a_nb);
+        //System.out.println(Thread.currentThread().getName() + " starts (size=" + board.getSize() + ")");
         
         final Board b = board.generateLargerBoard();
         final Set<Board> symetricDetection = board.isSymetric() ? new HashSet<Board>() : null;
@@ -29,7 +25,7 @@ public class Solver {
         analyzeIndexColumn(b, symetricDetection, 0, Board.RED, Board.RED_IS_DISALLOWED, Board.BLUE_IS_DISALLOWED);
         analyzeIndexColumn(b, symetricDetection, 0, Board.BLUE, Board.BLUE_IS_DISALLOWED, Board.RED_IS_DISALLOWED);
         
-        System.out.println(Thread.currentThread().getName() + " ends");
+        //System.out.println(Thread.currentThread().getName() + " ends");
     }
  
    

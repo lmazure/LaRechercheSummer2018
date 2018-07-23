@@ -14,35 +14,46 @@ public class BoardStack {
     final private int a_size;
     private Deque<Board> a_boards;
     final private Deque<File> a_files;
+    private int a_currentRecord;
+    //private int a_nb;
     
     public BoardStack(final int maximumNumberOfBoardsInMemory) {
         
         a_size = maximumNumberOfBoardsInMemory;
         a_boards = new ArrayDeque<Board>(a_size);
         a_files = new ArrayDeque<File>();
+        a_currentRecord = 0;
+        //a_nb = 0;
     }
     
-    public void push(final Board board) throws IOException {
-        
-        synchronized (this) {
-            if (a_boards.size() == a_size) {
-                final File file = writeBoardsToFile(a_boards, a_files.size());
-                a_files.push(file);
-                a_boards.clear();
-            }
-            a_boards.push(board);
+    synchronized public void push(final Board board) throws IOException {
+
+        //a_nb++;
+        //System.out.println("push " + a_boards.size() + " " + board.getSize() + " " + a_nb);
+
+        if (board.getSize() >= a_currentRecord) {
+            System.out.println(board.getSize());
+            System.out.println(board.dumpToString());
+            a_currentRecord = board.getSize();
         }
+
+        if (a_boards.size() == a_size) {
+            final File file = writeBoardsToFile(a_boards, a_files.size());
+            a_files.push(file);
+            a_boards.clear();
+        }
+        a_boards.push(board);
     }
     
-    public Board pop() throws IOException {
+    synchronized public Board pop() throws IOException {
+
+        //System.out.println("pop " + a_boards.size());
         
-        synchronized (this) {
-            if (a_boards.isEmpty()) {
-                final File file = a_files.pop();
-                retrieveBoardsFromFile(file, a_boards);
-            }
-            return a_boards.pop();            
+        if (a_boards.isEmpty()) {
+            final File file = a_files.pop();
+            retrieveBoardsFromFile(file, a_boards);
         }
+        return a_boards.pop();            
     }
 
     public boolean isEmpty() {
@@ -58,6 +69,7 @@ public class BoardStack {
         final String suffix = ".boards";
         final File file = File.createTempFile(prefix, suffix);
         file.deleteOnExit();
+        //System.out.println("Created file " + file.getAbsolutePath());
         
         try ( final FileOutputStream s = new FileOutputStream(file);
               final DataOutputStream os = new DataOutputStream(s)) {
@@ -75,6 +87,8 @@ public class BoardStack {
             final Deque<Board> boards) throws IOException {
         
         assert boards.isEmpty();
+
+        //System.out.println("Retrieved file " + file.getAbsolutePath());
         
         try ( final FileInputStream s = new FileInputStream(file);
               final DataInputStream is = new DataInputStream(s)) {

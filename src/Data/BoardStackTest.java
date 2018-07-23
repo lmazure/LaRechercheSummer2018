@@ -7,10 +7,10 @@ import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
 
-class BoardStackTest {
+public class BoardStackTest {
 
     @Test
-    void testInMemory() throws IOException {
+    void inMemoryPushPop() throws IOException {
 
         // --- arrange ---
         
@@ -37,7 +37,7 @@ class BoardStackTest {
     }
 
     @Test
-    void testExceptionIfPopEmpty() throws IOException {
+    void exceptionIfPopEmpty() throws IOException {
 
         // --- arrange ---
         
@@ -62,7 +62,7 @@ class BoardStackTest {
 
 
     @Test
-    void testOutOfMemory() throws IOException {
+    void outOfMemoryPushPop() throws IOException {
 
         // --- arrange ---
         
